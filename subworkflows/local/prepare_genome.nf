@@ -55,9 +55,13 @@ workflow PREPARE_GENOME {
         ch_bwamem2_index = Channel.empty()
     }
 
+    // Generate GFF file from Prokka
+    PROKKA ( UNMASK.out.fasta, '', '')
+    ch_versions = ch_versions.mix ( PROKKA.out.versions.first() )
 
     emit:
     fasta    = UNMASK.out.fasta.first()    // channel: [ meta, /path/to/fasta ]
+    gff      = PROKKA.out.gff 
     bwaidx   = ch_bwamem2_index.first()    // channel: [ meta, /path/to/bwamem2/index_dir/ ]
     versions = ch_versions                 // channel: [ versions.yml ]
 }

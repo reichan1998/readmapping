@@ -4,6 +4,7 @@
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+params.star_ignore_sjdbgtf = false
 
 //
 // MODULE: Local modules
@@ -68,6 +69,7 @@ workflow READMAPPING {
             pacbio : meta.datatype == "pacbio"
             clr : meta.datatype == "pacbio_clr"
             ont : meta.datatype == "ont"
+            rna : meta.library == "rna"
     }
     | set { ch_reads }
 
@@ -117,6 +119,9 @@ workflow READMAPPING {
     ALIGN_ONT ( PREPARE_GENOME.out.fasta, ch_reads.ont )
     ch_versions = ch_versions.mix ( ALIGN_ONT.out.versions )
 
+    ALIGN_STAR ( PREPARE_GENOME.out.fasta, [ [], [] ] PREPARE_GENOME.out.bwaidx, ch_reads.rna, params.star_ignore_sjdbgtf,'','' )
+    ch_versions = ch_versions.mix ( ALIGN_STAR.out.versions )
+
     // gather alignments
     ch_aligned_bams = Channel.empty()
     | mix( ALIGN_HIC.out.bam )
@@ -124,6 +129,7 @@ workflow READMAPPING {
     | mix( ALIGN_HIFI.out.bam )
     | mix( ALIGN_CLR.out.bam )
     | mix( ALIGN_ONT.out.bam )
+    | mix( ALIGN_STAR.out.bam )
 
     // Optionally insert params.header information to bams
     ch_reheadered_bams = Channel.empty()
