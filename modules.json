@@ -96,6 +96,11 @@
                         "git_sha": "730f3aee80d5f8d0b5fc532202ac59361414d006",
                         "installed_by": ["modules"]
                     },
+                    "star/align": {
+                        "branch": "master",
+                        "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
+                        "installed_by": ["modules"]
+                    },
                     "untar": {
                         "branch": "master",
                         "git_sha": "4e5f4687318f24ba944a13609d3ea6ebd890737d",
